@@ -8,8 +8,8 @@ import cors from "cors";
 const app = express();
 dotenv.config();
 
-app.use(express.json());  // allows us to send any json file from client
 app.use(cors()) // allows the client to connect with our backend server
+app.use(express.json());  // allows us to send any json file from client
 
 
 // db connection
@@ -38,18 +38,46 @@ app.get("/books", (req, res) => {
     });
 });
 
-// post a book
+// create a book
 app.post("/books", (req, res) => {
     const q = "INSERT INTO books (`title`, `desc`, `cover`) VALUES (?);"
     const values = [
-        req.body.title, req.body.desc, req.body.cover
+        req.body.title, req.body.desc, req.body.price, req.body.cover
     ];
 
     db.query(q, [values], (err, data) => {
         if (err) return res.json(err);
-        return res.json("Book has been created successfuully");
+        return res.json(data);
     });
 })
+
+// update a book
+app.put("/books/:id", (req, res) => {
+    const bookId = req.params.id;
+    const q = "UPDATE books SET `title` = ?, `desc` = ?, `price` = ?, `cover` = ?, WHERE id = ?";
+
+    const values = [
+        req.body.title, req.body.desc, req.body.price, req.body.cover,
+    ];
+
+    db.query(q, [...values, bookId], (err, data) => {
+        if (err) return res.send(err);
+        return res.json(data);
+    });
+});
+
+// delete a book 
+app.delete("/books/:id", (req, res) => {
+    const bookId = req.params.id;
+    const q = "DELETE FROM books WHERE id = ?";
+
+    db.query(q, [bookId], (err, data) => {
+        if (err) return res.send(err);
+        return res.json(data);
+    });
+});
+
+
 
 // port listener to start server
 app.listen(8800, () => {
@@ -57,9 +85,3 @@ app.listen(8800, () => {
     console.log("❤️‍🔥❤️‍🔥❤️‍🔥 Connected to backend ❤️‍🔥❤️‍🔥❤️‍🔥")
     console.log("===============================")
 })
-
-
-
-app.listen(8000, () => {
-    console.log("Connected to backend.");
-  });
