@@ -2,12 +2,14 @@
 import express from "express";
 import mysql from "mysql";
 import dotenv from "dotenv";
+import cors from "cors";
 
 // middleware
 const app = express();
 dotenv.config();
-// allows us to send any json file from client
-app.use(express.json()); 
+
+app.use(express.json());  // allows us to send any json file from client
+app.use(cors()) // allows the client to connect with our backend server
 
 
 // db connection
