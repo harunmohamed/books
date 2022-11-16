@@ -1,5 +1,3 @@
-< PROJECT LOGO -->
-<br />
 <p align=center>
   <a href=https://github.com/harunmohamed/books>
     <img src=https://cdn-icons-png.flaticon.com/512/3528/3528211.png alt=Logo width=80 height=80>

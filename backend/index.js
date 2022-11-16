@@ -6,7 +6,8 @@ import dotenv from "dotenv";
 // middleware
 const app = express();
 dotenv.config();
-app.use(express.json());
+// allows us to send any json file from client
+app.use(express.json()); 
 
 
 // db connection
@@ -17,21 +18,36 @@ const db = mysql.createConnection({
     database: "test",
   });
  
-
+// welcome route
 app.get("/", (req, res) => {
     res.json("hello"); 
 });
 
-  app.get("/books", (req, res) => {
+
+// get all books
+app.get("/books", (req, res) => {
     const q = "SELECT * FROM books";
     db.query(q, (err, data) => {
-      if (err) {
-        console.log(err);
-        return res.json(err);
-      }
-      return res.json(data);
+        if (err) {
+            console.log(err);
+            return res.json(err);
+        }
+        return res.json(data);
     });
-  });
+});
+
+// post a book
+app.post("/books", (req, res) => {
+    const q = "INSERT INTO books (`title`, `desc`, `cover`) VALUES (?);"
+    const values = [
+        req.body.title, req.body.desc, req.body.cover
+    ];
+
+    db.query(q, [values], (err, data) => {
+        if (err) return res.json(err);
+        return res.json("Book has been created successfuully");
+    });
+})
 
 // port listener to start server
 app.listen(8800, () => {
